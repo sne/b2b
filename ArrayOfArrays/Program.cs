@@ -1,11 +1,24 @@
-﻿namespace ArrayOfArrays;
+﻿using System.Diagnostics;
+
+namespace ArrayOfArrays;
 
 public class Program
 {
     public static void Main()
     {
         Program p = new();
-        p.InitialVersion();
+
+        TimeSpan timespan = MeasureTime(p.InitialVersion);
+        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+    }
+
+    private static TimeSpan MeasureTime(Action algorithm)
+    {
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
+        algorithm();
+        stopwatch.Stop();
+        return stopwatch.Elapsed;
     }
 
     private void InitialVersion()
