@@ -17,7 +17,7 @@ namespace ArrayOfArrays;
 /// </summary>
 public class Program
 {
-    private const int NumberOfEntities = 200_000_000;
+    private const int NumberOfEntities = 100_000;
     private const bool IsConsoleWriteLineEnabled = false;
 
     public static void Main()
@@ -34,10 +34,17 @@ public class Program
         timespan = MeasureTime(p.WithObjects);
         Console.WriteLine($"WithObjects:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
 
-        //Console.WriteLine("--- Not yet implemented ---");
+        Console.WriteLine("--- Not yet implemented ---");
 
-        //timespan = MeasureTime(p.OneIntWithRefKeyword);
-        //Console.WriteLine($"OneIntWithRefKeyword:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+        timespan = MeasureTime(p.OneIntWithRefKeyword);
+        Console.WriteLine($"OneIntWithRefKeyword:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
+
+        timespan = MeasureTime(p.ArrayOfIntsWithRefKeyword);
+        Console.WriteLine($"ArrayOfIntsWithRefKeyword:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
+
+        timespan = MeasureTime(p.ArrayOfIntWithPointer);
+        Console.WriteLine($"ArrayOfIntWithPointer:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
+
         Console.WriteLine("Ended.");
     }
 
@@ -120,5 +127,55 @@ public class Program
 
         x = 11; // Changing x changes y
         Output($"\n{nameof(y)} = {y}");
+    }
+
+    private void ArrayOfIntsWithRefKeyword()
+    {
+        int[] firstArray = new int[NumberOfEntities];
+        firstArray[0] = 0;
+        firstArray[1] = 1;
+        firstArray[2] = 2;
+        int x = 10;
+
+        int[] secondArray = new int[NumberOfEntities];
+        //secondArray[0] = ref firstArray[1];
+
+        Output($"{nameof(secondArray)}[0] = {secondArray[0]}");
+
+        firstArray[1] = 11;
+        Output($"\n{nameof(secondArray)}[0] = {secondArray[0]}");
+
+    }
+
+    private void ArrayOfIntWithPointer()
+    {
+        unsafe
+        {
+            int[] firstArray = new int[NumberOfEntities];
+            firstArray[0] = 0;
+            firstArray[1] = 1;
+            firstArray[2] = 2;
+            firstArray[3] = 3;
+            firstArray[4] = 4;
+
+            int*[] secondArray = new int*[3]; // An int array that contains pointers to other ints
+            // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code
+            secondArray[0] = (int*)firstArray[2];
+            secondArray[1] = (int*)firstArray[0];
+            secondArray[2] = (int*)firstArray[4];
+
+            int test = *secondArray[0];
+            Output($"{nameof(secondArray)}[0] = {*secondArray[0]}");
+            Output($"{nameof(secondArray)}[1] = {*secondArray[1]}");
+            Output($"{nameof(secondArray)}[2] = {*secondArray[2]}");
+
+            firstArray[2] = 7;
+            firstArray[0] = 8;
+            firstArray[4] = 9;
+
+            Output($"\n{nameof(secondArray)}[0] = {*secondArray[0]}");
+            Output($"{nameof(secondArray)}[1] = {*secondArray[1]}");
+            Output($"{nameof(secondArray)}[2] = {*secondArray[2]}");
+        }
     }
 }
