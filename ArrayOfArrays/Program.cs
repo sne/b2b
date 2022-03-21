@@ -42,6 +42,9 @@ public class Program
         timespan = MeasureTime(p.ArrayOfIntsWithRefKeyword);
         Console.WriteLine($"ArrayOfIntsWithRefKeyword:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
 
+        timespan = MeasureTime(p.OneIntWithPointer);
+        Console.WriteLine($"OneIntWithPointer:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
+
         timespan = MeasureTime(p.ArrayOfIntWithPointer);
         Console.WriteLine($"ArrayOfIntWithPointer:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
 
@@ -138,13 +141,36 @@ public class Program
         int x = 10;
 
         int[] secondArray = new int[NumberOfEntities];
-        //secondArray[0] = ref firstArray[1];
+        //secondArray[0] = ref firstArray[1];               // Doesn't work yet
 
         Output($"{nameof(secondArray)}[0] = {secondArray[0]}");
 
         firstArray[1] = 11;
         Output($"\n{nameof(secondArray)}[0] = {secondArray[0]}");
 
+    }
+
+    /// <summary>
+    /// Source: https://www.geeksforgeeks.org/unsafe-code-in-c-sharp/
+    /// Allow to have unsafe blocks by enabling the feature in the project properties
+    ///          Project → Context menu: Properties → Tab: Build → Node: Genera
+    ///          → Check: Unsafe code (Allow code that uses the 'unsafe' keyword to compile
+    /// </summary>
+    private void OneIntWithPointer()
+    {
+        unsafe
+        {
+            int x = 10;     // Declare a regular int
+            int* pointer;   // Declare a pointer that can point to a int
+            pointer = &x;   // Have the pointer point to the value of x
+
+            Output($"{nameof(x)} = {x}");
+            Output($"{nameof(pointer)} = {*pointer}");
+
+            x = 11;
+            Output($"\n{nameof(x)} = {x}");
+            Output($"{nameof(pointer)} = {*pointer}");
+        }
     }
 
     private void ArrayOfIntWithPointer()
@@ -159,7 +185,7 @@ public class Program
             firstArray[4] = 4;
 
             int*[] secondArray = new int*[3]; // An int array that contains pointers to other ints
-            // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code
+                                              // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code
             secondArray[0] = (int*)firstArray[2];
             secondArray[1] = (int*)firstArray[0];
             secondArray[2] = (int*)firstArray[4];
