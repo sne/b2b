@@ -17,24 +17,28 @@ namespace ArrayOfArrays;
 /// </summary>
 public class Program
 {
-    private const int NumberOfEntities = 1_000_000;
+    private const int NumberOfEntities = 200_000_000;
+    private const bool IsConsoleWriteLineEnabled = false;
 
     public static void Main()
     {
+        Console.WriteLine("Started...");
         Program p = new();
 
         Console.WriteLine($"{nameof(NumberOfEntities)}: {NumberOfEntities:N0}");
+        Console.WriteLine($"{nameof(IsConsoleWriteLineEnabled)}: {IsConsoleWriteLineEnabled}");
 
         TimeSpan timespan = MeasureTime(p.InitialVersion);
-        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
 
         timespan = MeasureTime(p.WithObjects);
-        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+        Console.WriteLine($"WithObjects:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms\t... still running...");
 
-        Console.WriteLine("--- Not yet implemented ---");
+        //Console.WriteLine("--- Not yet implemented ---");
 
-        timespan = MeasureTime(p.OneIntWithRefKeyword);
-        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+        //timespan = MeasureTime(p.OneIntWithRefKeyword);
+        //Console.WriteLine($"OneIntWithRefKeyword:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+        Console.WriteLine("Ended.");
     }
 
     private static TimeSpan MeasureTime(Action algorithm)
@@ -46,6 +50,14 @@ public class Program
         return stopwatch.Elapsed;
     }
 
+    private void Output(object message)
+    {
+        if (IsConsoleWriteLineEnabled)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
     private void InitialVersion()
     {
         int[] entitiesField = new int[NumberOfEntities];
@@ -54,15 +66,15 @@ public class Program
             entitiesField[i] = i;
         }
         ref int neighbour = ref entitiesField[2];
-        Console.WriteLine(neighbour);
+        Output(neighbour);
         entitiesField[2] = 734;
-        Console.WriteLine(neighbour);
+        Output(neighbour);
 
         int[] refarray = new int[NumberOfEntities];
         refarray[0] = neighbour;
-        Console.WriteLine(refarray[0]);
+        Output(refarray[0]);
         entitiesField[2] = 7;
-        Console.WriteLine(refarray[0]);
+        Output(refarray[0]);
 
         //output:
         //2
@@ -77,10 +89,9 @@ public class Program
         Entity[] entities = new Entity[NumberOfEntities];
 
         // Initialize entity and it's value
-        for (int i = 0; i < 31; i++)
+        for (int i = 0; i < NumberOfEntities; i++)
         {
-            entities[i] = new Entity();
-            entities[i].Value = i;
+            entities[i] = new Entity { Value = i };
         }
 
         // Set the neighbour for some of the entities
@@ -93,7 +104,7 @@ public class Program
         // Print all entity's value and it's neighbour's value
         foreach (Entity currentEntity in entities)
         {
-            Debug.WriteLine(currentEntity);
+            Output(currentEntity);
         }
     }
 
@@ -105,9 +116,9 @@ public class Program
         int x = 10;
         ref int y = ref x;
 
-        Console.WriteLine($"{nameof(y)} = {y}");
+        Output($"{nameof(y)} = {y}");
 
         x = 11; // Changing x changes y
-        Console.WriteLine($"\n{nameof(y)} = {y}");
+        Output($"\n{nameof(y)} = {y}");
     }
 }
