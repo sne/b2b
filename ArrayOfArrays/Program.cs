@@ -30,6 +30,11 @@ public class Program
 
         timespan = MeasureTime(p.WithObjects);
         Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+
+        Console.WriteLine("--- Not yet implemented ---");
+
+        timespan = MeasureTime(p.OneIntWithRefKeyword);
+        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
     }
 
     private static TimeSpan MeasureTime(Action algorithm)
@@ -90,5 +95,19 @@ public class Program
         {
             Debug.WriteLine(currentEntity);
         }
+    }
+
+    /// <summary>
+    /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/ref-returns
+    /// </summary>
+    private void OneIntWithRefKeyword()
+    {
+        int x = 10;
+        ref int y = ref x;
+
+        Console.WriteLine($"{nameof(y)} = {y}");
+
+        x = 11; // Changing x changes y
+        Console.WriteLine($"\n{nameof(y)} = {y}");
     }
 }
