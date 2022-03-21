@@ -2,13 +2,33 @@
 
 namespace ArrayOfArrays;
 
+/// <summary>
+/// Todo list
+///
+/// - object
+/// - struct
+/// - int ref, unsafe
+/// - zuple
+/// - record
+///
+/// - creation of 1 billion object ~ 4h
+/// - parallelize
+///
+/// </summary>
 public class Program
 {
+    private const int NumberOfEntities = 1_000_000;
+
     public static void Main()
     {
         Program p = new();
 
+        Console.WriteLine($"{nameof(NumberOfEntities)}: {NumberOfEntities:N0}");
+
         TimeSpan timespan = MeasureTime(p.InitialVersion);
+        Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
+
+        timespan = MeasureTime(p.WithObjects);
         Console.WriteLine($"InitialVersion:\t{timespan:hh\\:mm\\:ss\\:fff} hour:min:sec:ms");
     }
 
@@ -23,20 +43,20 @@ public class Program
 
     private void InitialVersion()
     {
-        int[] entities_field = new int[31];
-        for (int i = 0; i < 31; i++)
+        int[] entitiesField = new int[NumberOfEntities];
+        for (int i = 0; i < NumberOfEntities; i++)
         {
-            entities_field[i] = i;
+            entitiesField[i] = i;
         }
-        ref int neighbour = ref entities_field[2];
+        ref int neighbour = ref entitiesField[2];
         Console.WriteLine(neighbour);
-        entities_field[2] = 734;
+        entitiesField[2] = 734;
         Console.WriteLine(neighbour);
 
-        int[] refarray = new int[31];
+        int[] refarray = new int[NumberOfEntities];
         refarray[0] = neighbour;
         Console.WriteLine(refarray[0]);
-        entities_field[2] = 7;
+        entitiesField[2] = 7;
         Console.WriteLine(refarray[0]);
 
         //output:
@@ -44,5 +64,31 @@ public class Program
         //734
         //734
         //734
+    }
+
+    private void WithObjects()
+    {
+        // Create a list of entities
+        Entity[] entities = new Entity[NumberOfEntities];
+
+        // Initialize entity and it's value
+        for (int i = 0; i < 31; i++)
+        {
+            entities[i] = new Entity();
+            entities[i].Value = i;
+        }
+
+        // Set the neighbour for some of the entities
+        entities[0].Neighbour = null;
+        entities[1].Neighbour = entities[4];
+        entities[2].Neighbour = null;
+        entities[3].Neighbour = entities[0];
+        entities[4].Neighbour = null;
+
+        // Print all entity's value and it's neighbour's value
+        foreach (Entity currentEntity in entities)
+        {
+            Debug.WriteLine(currentEntity);
+        }
     }
 }
